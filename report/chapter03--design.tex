@@ -2,12 +2,22 @@
 \label{chap:design}
 
 \section{Functional test design}
-\subsection{Decision tables and input categories}
+\subsection{Equivalence partitioning}
+Inputs were partitioned by the behaviour specified in the brief.
+For example, coupon inputs included an absent coupon, a recognised
+and eligible coupon, a recognised but ineligible coupon, and an unknown
+code. Representative inputs were selected from these classes. The
+choice of representative depended on the rule: a recognised
+\texttt{VIP15} code was tested with both an eligible VIP customer and
+an ineligible Premium customer.
+
+\subsection{Decision tables}
 For each rule, the input conditions that could change its outcome were
 identified. Requirement 6 gives two conditions for \texttt{VIP15}: the
 customer must be a VIP and the original merchandise subtotal must be at
 least \pounds150.00. Table~\ref{tab:vip15-decisions} shows how these
-conditions became test scenarios. The expected outcomes come from the brief.
+conditions became test scenarios. The expected outcomes were derived
+from the brief.
 
 \begin{table}[htbp]
     \centering
@@ -28,12 +38,55 @@ conditions became test scenarios. The expected outcomes come from the brief.
     \end{tabular}
 \end{table}
 
+The Week 1 completeness check treats each independent Boolean condition
+as having two possible values.\footnote{M.~Mousavi, \emph{Functional
+Testing}, Week 1 lecture handout, King's College London, 2024,
+slides 4--5, 7--22, 28--32 and 36--37.}
+For \texttt{VIP15}, the two conditions give four combinations. The
+tests exercise three distinct combinations. The two eligible VIP cases
+check different boundary values but represent the same condition
+combination. A non-VIP below \pounds150.00 was omitted because the
+requirement specifies rejection for all non-VIPs, regardless of subtotal.
+In the decision table, the subtotal is therefore a \emph{don't-care}
+condition for non-VIPs. That rule is represented by one test, so behaviour
+for a non-VIP below the threshold was not independently verified.
+
 \subsection{Boundary value analysis}
 The values \pounds149.99, \pounds150.00, and \pounds150.01 were selected
-to check both sides of the threshold and whether the minimum itself qualified. The
-\pounds150.00 scenario also checks which subtotal determines eligibility.
-After the product discount, only the original subtotal still meets the
-minimum. This lets the test distinguish the two calculations.
+to check both sides of the threshold and whether the minimum itself
+qualified. The \pounds150.00 scenario also distinguishes the original
+subtotal from the discounted subtotal, which falls to \pounds135.00.
+The same approach was applied to quantity discounts and the
+\pounds75.00 Standard delivery threshold. Boundary values were centred
+on the cutoffs that change a requirement's outcome. The suite did not
+cross all boundary values of all inputs, since many combinations would
+repeat the same required behaviour.
+
+\subsection{Completeness and selection trade-offs}
+The suite used representative classes and selected interactions. It did
+not meet strong normal or strong robust equivalence class coverage for
+the full input domain. For example, crossing three customer types, two
+delivery options, and two total bands (below \pounds75.00 and at or above
+it) gives 12 valid delivery combinations. Eight were exercised directly.
+Express was checked for all three customer types, but at only one of the
+two total bands for each type. The brief fixes the Express fee regardless
+of subtotal, so those selections tested the tier interaction without
+repeating the required result at the other band. An incorrect dependence
+on subtotal in an untested band could therefore go undetected.
+
+Selected invalid cases, such as an unknown coupon and a missing delivery
+option, were tested individually with otherwise valid inputs. This
+follows the idea of weak robust testing without claiming complete
+coverage of invalid classes or combinations. Java's delivery enum also
+limits which inputs can reach the service: an unsupported name was
+tested at the enum boundary, and a missing option was tested in the
+service itself.
+
+A classification tree and its combination table were not constructed.
+The decisions were documented in rule tables, while the
+requirements-to-tests table linked scenarios to the brief. These were
+sufficient to organise the selected cases, but do not demonstrate
+exhaustive coverage of all feasible input combinations.
 
 \section{Unit tests, integration tests, and mocking}
 \subsection{Unit tests and real-service integration}
