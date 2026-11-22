@@ -5,8 +5,30 @@
 % Write a short description of the supplied Java online shopping system here.
 % Introduce discounts, coupons, and delivery as the rules that determine what
 % the customer pays.
+The SUT is a small online shopping system written in java, that manages shopping carts, applies discounts and coupons, calculates delivery fees, and produces an order summary with the final amount payable.
 
 \section{Testing objective}
 % State what you aimed to establish and what evidence the report presents.
 % The whole report has a strict limit of 3,000 words, so keep this chapter short.
+The objective was to find and document faults in the source code using a systematic testing methodology. 
+
+The methodology has to verify required behaviour; It needs to check discounts, coupons, delivery fees, and the final amount payable, with particular attention to thresholds and interactions between rules.
+
+Additionally, the methodology had to identify where each fault occurred in the source code. For each fault, the aim was to record the relevant class and line numbers, name the test that exposed it, and explain how the observed behaviour differed from the expected result.
+
+A further objective was to use JaCoCo to identify gaps in the initial test suite. The coverage report guided the selection of additional tests for meaningful paths, while the production code remained unchanged so that failing tests could demonstrate faults in the supplied system.
+
+\section{Technology Stack}
+\begin{itemize}
+    \item \textbf{Java 21} was used to compile and run the supplied application
+    and the test suite.
+    \item \textbf{JUnit 4.13.2} was used to run the tests and check whether
+    results and exceptions matched the expected behaviour.
+    \item \textbf{Mockito 1.9.5} was used to isolate the order service and verify
+    that it passed the final discounted total to the delivery service.
+    \item \textbf{JaCoCo 0.8.15} measured line and branch coverage and generated
+    the HTML reports used to compare the baseline and final test suites.
+    \item \textbf{Visual Studio Code} was used to develop the tests, inspect
+    failures, and run the coverage tasks.
+\end{itemize}
 
