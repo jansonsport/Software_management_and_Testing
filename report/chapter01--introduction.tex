@@ -8,15 +8,31 @@
 The SUT is a small online shopping system written in java, that manages shopping carts, applies discounts and coupons, calculates delivery fees, and produces an order summary with the final amount payable.
 
 \section{Testing objective}
-% State what you aimed to establish and what evidence the report presents.
-% The whole report has a strict limit of 3,000 words, so keep this chapter short.
-The objective was to find and document faults in the source code using a systematic testing methodology. 
+The objective was to find and document faults by testing the supplied
+system against its requirements. We focused on discount, coupon, and
+delivery rules and how they affect the final amount payable.
 
-The methodology has to verify required behaviour; It needs to check discounts, coupons, delivery fees, and the final amount payable, with particular attention to thresholds and interactions between rules.
-
-Additionally, the methodology had to identify where each fault occurred in the source code. For each fault, the aim was to record the relevant class and line numbers, name the test that exposed it, and explain how the observed behaviour differed from the expected result.
-
-A further objective was to use JaCoCo to identify gaps in the initial test suite. The coverage report guided the selection of additional tests for meaningful paths, while the production code remained unchanged so that failing tests could demonstrate faults in the supplied system.
+\section{Methodology}
+\begin{enumerate}
+    \item \textbf{Group the requirements.} We grouped the 14 requirements
+    by behaviour and prioritised rules whose interaction could change
+    what a customer pays.
+    \item \textbf{Design and run the functional baseline.} We used
+    decision tables and boundary values to select inputs and derived
+    expected results from the brief. We wrote JUnit tests for individual
+    classes and for orders using real services. We also used Mockito to
+    isolate the order service and check what total it passed to delivery.
+    \item \textbf{Inspect coverage and add structural tests.} We used
+    JaCoCo to measure baseline line and branch coverage. We traced missed
+    decisions through the source code and decision-to-decision graphs,
+    then added tests for reachable paths such as rejecting a negative
+    delivery total.
+    \item \textbf{Rerun and document the findings.} We compared the
+    final coverage with the baseline and recorded any remaining gaps.
+    For each fault we documented the exposing test, the expected and
+    observed behaviour, and the source class and line numbers. The
+    production code remained unchanged.
+\end{enumerate}
 
 \section{Technology Stack}
 \begin{itemize}
