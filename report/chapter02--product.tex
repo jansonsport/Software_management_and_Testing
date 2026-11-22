@@ -2,12 +2,54 @@
 \label{chap:product}
 
 \section{Grouping the requirements}
-% Explain how you turned the 14 requirements into groups of testable behaviour.
-% Use docs/requirements-to-tests.md as working evidence. Choose representative
-% examples instead of reproducing the whole matrix.
+We read each of the 14 requirements and identified the behaviour it
+specified, the inputs that could change the outcome, and the result we
+would need to observe. Requirements that shared a decision or calculation
+were grouped so that related scenarios could be designed together.
 
-\section{Scope and priorities}
-% Explain why discounts, coupons, and delivery interactions received priority.
-% Give an example of supporting behaviour that received less attention and say
-% why. Save the test selection techniques for Chapter~\ref{chap:design}.
+\begin{itemize}
+    \item \textbf{Customer types and product categories (1--2).}
+    These define the values used by the pricing rules.
+    \item \textbf{Product discounts (3--4).}
+    Both rules depend on quantities and on which entries count as the
+    same product.
+    \item \textbf{Coupons (5--8).}
+    These rules jointly define which codes are accepted, which subtotal
+    determines eligibility, and when the deduction is applied.
+    \item \textbf{Monetary calculations (9, 10, and 14).}
+    These specify the limits on deductions, how amounts are rounded,
+    and how the final amount payable is calculated.
+    \item \textbf{Delivery (11--13).}
+    These rules use the delivery option, customer type, and discounted
+    total to determine the fee.
+\end{itemize}
+
+The Java classes helped us choose where to test each rule. For example,
+\texttt{DiscountService} implements both product discounts and coupons.
+We kept them as separate requirement groups because the decisions that
+determine their outcomes differ. A scenario could still provide evidence
+for several requirements, so we recorded those links in the
+requirements-to-tests table.
+
+\section{Tracing scenarios to the source code}
+After specifying a scenario and its expected outcome from the brief, we
+traced the code responsible for that outcome:
+
+\begin{enumerate}
+    \item Identify the public method a caller would use for the scenario.
+    \item Follow its calls and track the values that affect the outcome.
+    \item Record which class makes the decision and which class supplies
+    its inputs. Use that distinction to choose a unit, integration, or
+    mock-based test.
+\end{enumerate}
+
+For example, a Premium order that starts at \pounds78.00 and falls to
+\pounds74.10 after a product discount should be charged \pounds4.99
+for Standard delivery. Starting at \texttt{OrderService.createOrder},
+we traced the subtotal calculated by \texttt{DiscountService}, the
+amount passed by \texttt{OrderService}, and the comparison against
+\pounds75.00 in \texttt{DeliveryService}. We tested the threshold
+directly in the delivery service, checked the resulting fee in an
+integration test, and used Mockito to verify the amount passed between
+the services.
 
