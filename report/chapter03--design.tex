@@ -3,13 +3,10 @@
 
 \section{Functional test design}
 \subsection{Equivalence partitioning}
-Inputs were partitioned by the behaviour specified in the brief.
-For example, coupon inputs included an absent coupon, a recognised
-and eligible coupon, a recognised but ineligible coupon, and an unknown
-code. Representative inputs were selected from these classes. The
-choice of representative depended on the rule: a recognised
-\texttt{VIP15} code was tested with both an eligible VIP customer and
-an ineligible Premium customer.
+Equivalence partitioning was used to select coupon inputs: an absent
+coupon, an eligible coupon, an ineligible coupon, and an unknown code.
+For example, \texttt{VIP15} was tested with an eligible VIP customer
+and an ineligible Premium customer.
 
 \subsection{Decision tables}
 For each rule, the input conditions that could change its outcome were
@@ -38,18 +35,12 @@ from the brief.
     \end{tabular}
 \end{table}
 
-The Week 1 completeness check treats each independent Boolean condition
-as having two possible values.\footnote{M.~Mousavi, \emph{Functional
-Testing}, Week 1 lecture handout, King's College London, 2024,
-slides 4--5, 7--22, 28--32 and 36--37.}
-For \texttt{VIP15}, the two conditions give four combinations. The
-tests exercise three distinct combinations. The two eligible VIP cases
-check different boundary values but represent the same condition
-combination. A non-VIP below \pounds150.00 was omitted because the
-requirement specifies rejection for all non-VIPs, regardless of subtotal.
-In the decision table, the subtotal is therefore a \emph{don't-care}
-condition for non-VIPs. That rule is represented by one test, so behaviour
-for a non-VIP below the threshold was not independently verified.
+The \texttt{VIP15} tests exercise three of the four condition
+combinations. The two eligible VIP cases use different boundary values
+within the same combination. For non-VIPs, the original subtotal is a
+\emph{don't-care} condition because the coupon must always be rejected.
+The Premium case represents that rule. Rejection below \pounds150.00
+was not independently tested for non-VIPs.
 
 \subsection{Boundary value analysis}
 The values \pounds149.99, \pounds150.00, and \pounds150.01 were selected
