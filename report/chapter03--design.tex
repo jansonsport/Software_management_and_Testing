@@ -3,8 +3,8 @@
 
 \section{Functional test design}
 \subsection{Decision tables and input categories}
-For each rule, we identified the input conditions that could change its
-outcome. Requirement 6 gives two conditions for \texttt{VIP15}: the
+For each rule, the input conditions that could change its outcome were
+identified. Requirement 6 gives two conditions for \texttt{VIP15}: the
 customer must be a VIP and the original merchandise subtotal must be at
 least \pounds150.00. Table~\ref{tab:vip15-decisions} shows how these
 conditions became test scenarios. The expected outcomes come from the brief.
@@ -29,8 +29,8 @@ conditions became test scenarios. The expected outcomes come from the brief.
 \end{table}
 
 \subsection{Boundary value analysis}
-We used \pounds149.99, \pounds150.00, and \pounds150.01 to check both
-sides of the threshold and whether the minimum itself qualified. The
+The values \pounds149.99, \pounds150.00, and \pounds150.01 were selected
+to check both sides of the threshold and whether the minimum itself qualified. The
 \pounds150.00 scenario also checks which subtotal determines eligibility.
 After the product discount, only the original subtotal still meets the
 minimum. This lets the test distinguish the two calculations.
@@ -47,12 +47,13 @@ minimum. This lets the test distinguish the two calculations.
 \section{Coverage-guided structural testing}
 The functional decision table describes the behaviour required by the
 brief. The decision-to-decision graphs describe the paths in the supplied
-Java implementation. After running the functional baseline, we used JaCoCo
-to locate missed decision outcomes and traced them through the code.
+Java implementation. After the functional baseline was run, JaCoCo was
+used to locate missed decision outcomes, which were then traced through
+the code.
 
 For example, the baseline exercised delivery with valid totals but missed
-the branch that rejects a negative total. We added a structural test that
-passes a merchandise total of \(-\)\pounds0.01 with otherwise valid inputs
-and checks that the delivery service throws
+the branch that rejects a negative total. A structural test was added
+with a merchandise total of \(-\)\pounds0.01 and otherwise valid inputs.
+The test checks that the delivery service throws
 \texttt{IllegalArgumentException}.
 

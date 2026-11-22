@@ -2,10 +2,10 @@
 \label{chap:product}
 
 \section{Grouping the requirements}
-We read each of the 14 requirements and identified the behaviour it
-specified, the inputs that could change the outcome, and the result we
-would need to observe. Requirements that shared a decision or calculation
-were grouped so that related scenarios could be designed together.
+Each of the 14 requirements was reviewed to identify the specified
+behaviour, the inputs that could change the outcome, and the expected
+result. Requirements that shared a decision or calculation were grouped
+so that related scenarios could be designed together.
 
 \begin{itemize}
     \item \textbf{Customer types and product categories (1--2).}
@@ -24,32 +24,33 @@ were grouped so that related scenarios could be designed together.
     total to determine the fee.
 \end{itemize}
 
-The Java classes helped us choose where to test each rule. For example,
-\texttt{DiscountService} implements both product discounts and coupons.
-We kept them as separate requirement groups because the decisions that
-determine their outcomes differ. A scenario could still provide evidence
-for several requirements, so we recorded those links in the
+The Java class structure guided the choice of where to test each rule.
+For example, \texttt{DiscountService} implements both product discounts
+and coupons. These were kept as separate requirement groups because their
+outcomes depend on different decisions. Since one scenario could provide
+evidence for several requirements, those links were recorded in the
 requirements-to-tests table.
 
 \section{Tracing scenarios to the source code}
-After specifying a scenario and its expected outcome from the brief, we
-traced the code responsible for that outcome:
+After a scenario and its expected outcome were defined from the brief,
+the responsible code was traced in three steps:
 
 \begin{enumerate}
-    \item Identify the public method a caller would use for the scenario.
-    \item Follow its calls and track the values that affect the outcome.
-    \item Record which class makes the decision and which class supplies
-    its inputs. Use that distinction to choose a unit, integration, or
-    mock-based test.
+    \item The public method for the scenario was identified.
+    \item Its calls were followed to track the values that affect the
+    outcome.
+    \item The class that makes the decision and the class that supplies
+    its inputs were identified. This distinction guided the choice of a
+    unit, integration, or mock-based test.
 \end{enumerate}
 
 For example, a Premium order that starts at \pounds78.00 and falls to
 \pounds74.10 after a product discount should be charged \pounds4.99
-for Standard delivery. Starting at \texttt{OrderService.createOrder},
-we traced the subtotal calculated by \texttt{DiscountService}, the
-amount passed by \texttt{OrderService}, and the comparison against
-\pounds75.00 in \texttt{DeliveryService}. We tested the threshold
-directly in the delivery service, checked the resulting fee in an
-integration test, and used Mockito to verify the amount passed between
-the services.
+for Standard delivery. The trace started at
+\texttt{OrderService.createOrder} and followed the subtotal calculated by
+\texttt{DiscountService}, the amount passed by \texttt{OrderService}, and
+the comparison against \pounds75.00 in \texttt{DeliveryService}. The
+threshold was tested directly in the delivery service, and the resulting
+fee was checked in an integration test. Mockito was used to verify the
+amount passed between the services.
 

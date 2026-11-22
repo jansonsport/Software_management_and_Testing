@@ -9,27 +9,26 @@ The SUT is a small online shopping system written in java, that manages shopping
 
 \section{Testing objective}
 The objective was to find and document faults by testing the supplied
-system against its requirements. We focused on discount, coupon, and
-delivery rules and how they affect the final amount payable.
+system against its requirements. Testing focused on discount, coupon,
+and delivery rules and their effect on the final amount payable.
 
 \section{Methodology}
 \begin{enumerate}
-    \item \textbf{Group the requirements.} We grouped the 14 requirements
-    by behaviour and prioritised rules whose interaction could change
-    what a customer pays.
-    \item \textbf{Design and run the functional baseline.} We used
-    decision tables and boundary values to select inputs and derived
-    expected results from the brief. We wrote JUnit tests for individual
-    classes and for orders using real services. We also used Mockito to
-    isolate the order service and check what total it passed to delivery.
-    \item \textbf{Inspect coverage and add structural tests.} We used
-    JaCoCo to measure baseline line and branch coverage. We traced missed
-    decisions through the source code and decision-to-decision graphs,
-    then added tests for reachable paths such as rejecting a negative
-    delivery total.
-    \item \textbf{Rerun and document the findings.} We compared the
-    final coverage with the baseline and recorded any remaining gaps.
-    For each fault we documented the exposing test, the expected and
+    \item \textbf{Requirement grouping.} The 14 requirements were
+    grouped by behaviour. Priority was given to rules whose interaction
+    could change what a customer pays.
+    \item \textbf{Functional baseline.} Test inputs were selected using
+    decision tables and boundary values. Expected results were derived
+    from the brief. JUnit tests exercised individual classes and orders
+    using real services. Mockito was used to isolate the order service
+    and check which total it passed to delivery.
+    \item \textbf{Structural testing.} Baseline line and branch coverage
+    was measured with JaCoCo. Missed decisions were traced through the
+    source code and decision-to-decision graphs. Tests were then added
+    for reachable paths such as the rejection of a negative delivery total.
+    \item \textbf{Final results and fault documentation.} Final coverage
+    was compared with the baseline, and remaining gaps were recorded.
+    Each fault was documented with its exposing test, expected and
     observed behaviour, and the source class and line numbers. The
     production code remained unchanged.
 \end{enumerate}
