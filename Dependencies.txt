@@ -1,0 +1,24 @@
+Java 21 JDK
+
+Test classpath (junit4/):
+  JUnit 4.13.2
+  Hamcrest Core 1.3
+  Mockito All 1.9.5
+
+The Mockito jar includes its dependencies. On Java 21 the test JVM uses
+--add-opens=java.base/java.lang=ALL-UNNAMED for this version.
+
+Coverage tools (tools/jacoco/offline/):
+  JaCoCo agent and core 0.8.15, and ASM, ASM Commons and ASM Tree 9.10.1
+  from the installed VS Code Test Runner for Java.
+  JaCoCo Report 0.8.15, compiled locally from the unmodified upstream
+  v0.8.15 report module under Eclipse Public License 2.0.
+  Source: https://github.com/jacoco/jacoco/tree/v0.8.15/org.jacoco.report
+  scripts/JaCoCoCoverageReport.java invokes the standard HTML formatter.
+
+Optional coverage tools (tools/jacoco/):
+  JaCoCo agent and CLI 0.8.16.
+  The coverage task selects these automatically when both jars are present.
+
+Run Java: Final coverage from VS Code to generate Coverage/index.html.
+The artefact zip contains the tests, HTML report, and this dependency list.

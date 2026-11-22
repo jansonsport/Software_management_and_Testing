@@ -1,0 +1,16 @@
+{
+  "java.import.exclusions": [
+    "**/node_modules/**",
+    "**/.metadata/**",
+    "**/archetype-resources/**",
+    "**/META-INF/maven/**",
+    "**/SolutionRefactoring",
+    "**/SolutionRefactoring/**"
+  ],
+  "java.test.defaultConfig": "JUnit 4 with Mockito",
+  "java.test.config": {
+    "name": "JUnit 4 with Mockito",
+    "workingDirectory": "${workspaceFolder}",
+    "vmArgs": ["--add-opens=java.base/java.lang=ALL-UNNAMED"]
+  }
+}

@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DiscountService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Online shopping (baseline)</a> &gt; <a href="index.source.html" class="el_package">onlineshopping</a> &gt; <span class="el_source">DiscountService.java</span></div><h1>DiscountService.java</h1><pre class="source lang-java linenums">
+package onlineshopping;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.List;
+import java.util.Objects;
+
+<span class="fc" id="L9">public class DiscountService {</span>
+
+<span class="fc" id="L11">    private static final BigDecimal ZERO = new BigDecimal(&quot;0.00&quot;);</span>
+
+    public static class DiscountResult {
+        public final BigDecimal originalSubtotal;
+        public final BigDecimal quantityDiscount;
+        public final BigDecimal accessoryDiscount;
+        public final BigDecimal couponDiscount;
+        public final BigDecimal finalTotal;
+
+        public DiscountResult(
+                BigDecimal originalSubtotal,
+                BigDecimal quantityDiscount,
+                BigDecimal accessoryDiscount,
+                BigDecimal couponDiscount,
+<span class="fc" id="L25">                BigDecimal finalTotal) {</span>
+<span class="fc" id="L26">            this.originalSubtotal = originalSubtotal;</span>
+<span class="fc" id="L27">            this.quantityDiscount = quantityDiscount;</span>
+<span class="fc" id="L28">            this.accessoryDiscount = accessoryDiscount;</span>
+<span class="fc" id="L29">            this.couponDiscount = couponDiscount;</span>
+<span class="fc" id="L30">            this.finalTotal = finalTotal;</span>
+<span class="fc" id="L31">        }</span>
+    }
+
+    private BigDecimal money(BigDecimal amount) {
+<span class="fc" id="L35">        return amount.setScale(2, RoundingMode.HALF_UP);</span>
+    }
+
+
+    public DiscountResult calculateDiscount(
+            List&lt;CartItem&gt; items,
+            CustomerType customerType,
+            String couponCode) {
+
+<span class="fc" id="L44">        validateInputs(items, customerType);</span>
+
+<span class="fc" id="L46">        BigDecimal originalSubtotal = money(calculateSubtotal(items));</span>
+
+        // Apply customer-specific quantity discounts first.
+<span class="fc" id="L49">        BigDecimal quantityDiscount =</span>
+<span class="fc" id="L50">                money(calculateQuantityDiscount(items, customerType));</span>
+
+<span class="fc" id="L52">        BigDecimal subtotalAfterQuantityDiscount = money(</span>
+<span class="fc" id="L53">                originalSubtotal.subtract(quantityDiscount).max(ZERO));</span>
+
+        // Apply the accessory discount to qualifying accessories
+<span class="fc" id="L56">        BigDecimal accessoryDiscount = calculateAccessoryDiscount(</span>
+                items, customerType);
+
+<span class="fc" id="L59">        BigDecimal productTotal = money(</span>
+                subtotalAfterQuantityDiscount
+<span class="fc" id="L61">                        .subtract(accessoryDiscount)</span>
+<span class="fc" id="L62">                        .max(ZERO));</span>
+
+        // Apply the coupon after both product-level discounts.
+<span class="fc" id="L65">        BigDecimal couponDiscount = calculateCouponDiscount(</span>
+                couponCode,
+                customerType,
+                originalSubtotal,
+                productTotal);
+
+<span class="fc" id="L71">        BigDecimal finalTotal = money(</span>
+<span class="fc" id="L72">                productTotal.subtract(couponDiscount).max(ZERO));</span>
+
+<span class="fc" id="L74">        return new DiscountResult(</span>
+                originalSubtotal,
+                quantityDiscount,
+                accessoryDiscount,
+                couponDiscount,
+                finalTotal);
+    }
+
+
+    private void validateInputs(
+            List&lt;CartItem&gt; items,
+            CustomerType customerType) {
+
+<span class="fc" id="L87">        Objects.requireNonNull(items, &quot;Items are required&quot;);</span>
+<span class="fc" id="L88">        Objects.requireNonNull(customerType,</span>
+                &quot;Customer type is required&quot;);
+
+<span class="fc bfc" id="L91" title="All 2 branches covered.">        for (CartItem item : items) {</span>
+<span class="fc" id="L92">            Objects.requireNonNull(item, &quot;Cart item cannot be null&quot;);</span>
+<span class="fc" id="L93">            Objects.requireNonNull(item.getProduct(),</span>
+                    &quot;Product cannot be null&quot;);
+
+<span class="fc" id="L96">            int quantity = item.getQuantity();</span>
+<span class="fc" id="L97">            BigDecimal rawPrice = item.getProduct().getPrice();</span>
+
+<span class="pc bpc" id="L99" title="2 of 4 branches missed.">            if (quantity &lt;= 0 || rawPrice.compareTo(BigDecimal.ZERO) &lt; 0) {</span>
+<span class="nc" id="L100">                throw new IllegalArgumentException(</span>
+                        &quot;Quantity must be positive and price non-negative&quot;);
+            }
+<span class="fc" id="L103">        }</span>
+<span class="fc" id="L104">    }</span>
+
+    private BigDecimal calculateSubtotal(List&lt;CartItem&gt; items) {
+<span class="fc" id="L107">        BigDecimal subtotal = ZERO;</span>
+
+<span class="fc bfc" id="L109" title="All 2 branches covered.">        for (CartItem item : items) {</span>
+<span class="fc" id="L110">            BigDecimal price = item.getProduct().getPrice();</span>
+
+<span class="fc" id="L112">            subtotal = subtotal.add(</span>
+<span class="fc" id="L113">                    price.multiply(BigDecimal.valueOf(</span>
+<span class="fc" id="L114">                            item.getQuantity())));</span>
+<span class="fc" id="L115">        }</span>
+
+<span class="fc" id="L117">        return subtotal;</span>
+    }
+
+
+    private BigDecimal getQuantityDiscountRate(
+            int quantity,
+            CustomerType customerType) {
+
+<span class="fc bfc" id="L125" title="All 4 branches covered.">        if (customerType == CustomerType.VIP &amp;&amp; quantity &gt;= 3) {</span>
+<span class="fc" id="L126">            return new BigDecimal(&quot;0.10&quot;);</span>
+        }
+
+<span class="fc bfc" id="L129" title="All 4 branches covered.">        if (customerType == CustomerType.PREMIUM &amp;&amp; quantity &gt;= 3) {</span>
+<span class="fc" id="L130">            return new BigDecimal(&quot;0.05&quot;);</span>
+        }
+
+<span class="fc bfc" id="L133" title="All 4 branches covered.">        if (customerType == CustomerType.REGULAR &amp;&amp; quantity &gt; 5) {</span>
+<span class="fc" id="L134">            return new BigDecimal(&quot;0.05&quot;);</span>
+        }
+
+<span class="fc" id="L137">        return BigDecimal.ZERO;</span>
+    }
+
+    private BigDecimal calculateQuantityDiscount(
+            List&lt;CartItem&gt; items,
+            CustomerType customerType) {
+
+<span class="fc" id="L144">        BigDecimal discount = ZERO;</span>
+
+<span class="fc bfc" id="L146" title="All 2 branches covered.">        for (CartItem item : items) {</span>
+
+<span class="fc" id="L148">            Product product = item.getProduct();</span>
+
+<span class="fc bfc" id="L150" title="All 2 branches covered.">            if (product.getCategory() == ProductCategory.ACCESSORY) {</span>
+<span class="fc" id="L151">                continue;</span>
+            }
+
+<span class="fc" id="L154">            BigDecimal price = product.getPrice();</span>
+
+<span class="fc" id="L156">            int quantity = item.getQuantity();</span>
+
+<span class="fc" id="L158">            BigDecimal rate = getQuantityDiscountRate(</span>
+                    quantity, customerType);
+
+<span class="fc" id="L161">            BigDecimal lineDiscount = price</span>
+<span class="fc" id="L162">                    .multiply(BigDecimal.valueOf(quantity))</span>
+<span class="fc" id="L163">                    .multiply(rate);</span>
+
+<span class="fc" id="L165">            discount = discount.add(lineDiscount);</span>
+<span class="fc" id="L166">        }</span>
+
+<span class="fc" id="L168">        return discount;</span>
+    }
+
+
+    private BigDecimal calculateAccessoryDiscount(
+            List&lt;CartItem&gt; items,
+            CustomerType customerType) {
+
+<span class="fc" id="L176">        BigDecimal totalDiscount = ZERO;</span>
+
+<span class="fc bfc" id="L178" title="All 2 branches covered.">        for (CartItem item : items) {</span>
+<span class="fc" id="L179">            Product product = item.getProduct();</span>
+
+<span class="fc bfc" id="L181" title="All 2 branches covered.">            if (product.getCategory() != ProductCategory.ACCESSORY</span>
+<span class="fc bfc" id="L182" title="All 2 branches covered.">                    || item.getQuantity() &lt; 3) {</span>
+<span class="fc" id="L183">                continue;</span>
+            }
+
+<span class="fc" id="L186">            BigDecimal originalLineTotal = product.getPrice()</span>
+<span class="fc" id="L187">                    .multiply(BigDecimal.valueOf(item.getQuantity()));</span>
+
+<span class="fc" id="L189">            BigDecimal accessoryDiscount = money(</span>
+<span class="fc" id="L190">                    originalLineTotal.multiply(new BigDecimal(&quot;0.10&quot;)));</span>
+
+<span class="fc" id="L192">            totalDiscount = totalDiscount.add(accessoryDiscount);</span>
+<span class="fc" id="L193">        }</span>
+
+<span class="fc" id="L195">        return money(totalDiscount);</span>
+    }
+
+    private BigDecimal calculateCouponDiscount(
+            String couponCode,
+            CustomerType customerType,
+            BigDecimal originalSubtotal,
+            BigDecimal productTotal) {
+
+<span class="fc bfc" id="L204" title="All 2 branches covered.">        String coupon = couponCode == null</span>
+<span class="fc" id="L205">                ? &quot;&quot;</span>
+<span class="fc" id="L206">                : couponCode.trim();</span>
+
+<span class="fc bfc" id="L208" title="All 2 branches covered.">        if (coupon.isEmpty()) {</span>
+<span class="fc" id="L209">            return ZERO;</span>
+        }
+
+<span class="fc bfc" id="L212" title="All 2 branches covered.">        if (&quot;DISCOUNT10&quot;.equals(coupon)) {</span>
+<span class="fc bfc" id="L213" title="All 2 branches covered.">            if (productTotal.compareTo(new BigDecimal(&quot;100.00&quot;)) &gt;= 0) {</span>
+<span class="fc" id="L214">                return money(new BigDecimal(&quot;10.00&quot;)</span>
+<span class="fc" id="L215">                        .min(productTotal));</span>
+            }
+
+            // Coupon is valid, but the order does not qualify.
+<span class="fc" id="L219">            return money(BigDecimal.ZERO);</span>
+        }
+
+<span class="fc bfc" id="L222" title="All 2 branches covered.">        if (&quot;VIP15&quot;.equals(coupon)) {</span>
+<span class="fc bfc" id="L223" title="All 2 branches covered.">            if (customerType == CustomerType.VIP</span>
+<span class="fc bfc" id="L224" title="All 2 branches covered.">                    &amp;&amp; productTotal.compareTo(</span>
+                    new BigDecimal(&quot;150.00&quot;)) &gt;= 0) {
+<span class="fc" id="L226">                return money(new BigDecimal(&quot;15.00&quot;)</span>
+<span class="fc" id="L227">                        .min(productTotal));</span>
+            }
+
+            // Coupon is valid, but the customer/order is ineligible.
+<span class="fc" id="L231">            return money(BigDecimal.ZERO);</span>
+
+        }
+
+<span class="fc" id="L235">        throw new IllegalArgumentException(&quot;Invalid coupon&quot;);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

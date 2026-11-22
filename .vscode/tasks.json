@@ -1,0 +1,39 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Java: Download optional JaCoCo CLI",
+      "type": "process",
+      "command": "bash",
+      "args": ["scripts/fetch-test-tools.sh"],
+      "options": {"cwd": "${workspaceFolder}"},
+      "problemMatcher": []
+    },
+    {
+      "label": "Java: Baseline coverage",
+      "type": "process",
+      "command": "bash",
+      "args": ["scripts/test-coverage.sh", "baseline"],
+      "options": {"cwd": "${workspaceFolder}"},
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Java: Final coverage",
+      "type": "process",
+      "command": "bash",
+      "args": ["scripts/test-coverage.sh", "final"],
+      "options": {"cwd": "${workspaceFolder}"},
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Java: Package test artefacts",
+      "type": "process",
+      "command": "bash",
+      "args": ["scripts/package-test-artefacts.sh"],
+      "options": {"cwd": "${workspaceFolder}"},
+      "problemMatcher": []
+    }
+  ]
+}

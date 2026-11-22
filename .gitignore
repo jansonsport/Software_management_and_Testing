@@ -1,0 +1,4 @@
+.DS_Store
+*.class
+/build/local-git-metadata/
+/build/offline-check/

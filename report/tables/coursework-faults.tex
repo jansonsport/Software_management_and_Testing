@@ -1,0 +1,71 @@
+% Working evidence table. Independently check the entries before using them.
+\begingroup
+\small
+\setlength{\tabcolsep}{4pt}
+\newcommand{\faultname}[1]{\texttt{#1}}
+\begin{longtable}{@{}
+  >{\raggedright\arraybackslash}p{0.16\textwidth}
+  >{\raggedright\arraybackslash}p{0.08\textwidth}
+  >{\raggedright\arraybackslash}p{0.07\textwidth}
+  >{\raggedright\arraybackslash}p{0.29\textwidth}
+  >{\raggedright\arraybackslash}p{0.30\textwidth}@{}}
+\caption{Faults evidenced by failing tests}\label{tab:faults}\\
+\toprule
+\textbf{Class} & \textbf{Lines} & \textbf{Req.} & \textbf{Fault and observed result} & \textbf{Exposing test methods} \\
+\midrule
+\endfirsthead
+\multicolumn{5}{@{}l}{\tablename~\thetable\ (continued)} \\
+\toprule
+\textbf{Class} & \textbf{Lines} & \textbf{Req.} & \textbf{Fault and observed result} & \textbf{Exposing test methods} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{5}{r@{}}{\textit{Continued on the next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+
+\faultname{Discount\allowbreak{}Service} & 133--134 & 3 &
+Exactly five units fail the Regular quantity check. Expected \pounds5.00 off; observed \pounds0.00. &
+\faultname{test\allowbreak{}Regular\allowbreak{}At\allowbreak{}Threshold} \\
+\addlinespace
+
+\faultname{Discount\allowbreak{}Service} & 146--163 & 3 &
+Same-name non-accessory entries are evaluated separately. Expected \pounds6.00 off for one plus two laptops; observed \pounds0.00. &
+\faultname{test\allowbreak{}Combines\allowbreak{}Same\allowbreak{}Name\allowbreak{}Non\allowbreak{}Accessory\allowbreak{}Entries} \\
+\addlinespace
+
+\faultname{Discount\allowbreak{}Service} & 178--192 & 4 &
+Same-name accessory entries are evaluated separately. Expected \pounds3.00 off for one plus two mice; observed \pounds0.00. &
+\faultname{test\allowbreak{}Combines\allowbreak{}Same\allowbreak{}Name\allowbreak{}Accessory\allowbreak{}Entries} \\
+\addlinespace
+
+\faultname{Discount\allowbreak{}Service} & 223--227 & 6, 8 &
+\texttt{VIP15} checks the discounted subtotal. An original \pounds150.00 basket that fell to \pounds135.00 was due \pounds15.00 off; observed \pounds0.00. &
+\faultname{test\allowbreak{}Applies\allowbreak{}Vip15\allowbreak{}At\allowbreak{}Original\allowbreak{}Subtotal\allowbreak{}Threshold} \\
+\addlinespace
+
+\faultname{Discount\allowbreak{}Service} & 206, 212, 222 & 7 &
+Coupon matching is case sensitive after trimming. The eligible lower-case code with spaces throws an exception instead of deducting \pounds10.00. &
+\faultname{test\allowbreak{}Ignores\allowbreak{}Coupon\allowbreak{}Case\allowbreak{}And\allowbreak{}Surrounding\allowbreak{}Spaces} \\
+\addlinespace
+
+\faultname{Discount\allowbreak{}Service} & 219, 231 & 7 &
+The ineligible \texttt{DISCOUNT10} and \texttt{VIP15} paths return a zero discount. All four tests expected the service to throw an exception. &
+\faultname{test\allowbreak{}Rejects\allowbreak{}Discount10\allowbreak{}Below\allowbreak{}Threshold}\par
+\faultname{test\allowbreak{}Rejects\allowbreak{}Discount10\allowbreak{}When\allowbreak{}Product\allowbreak{}Discount\allowbreak{}Drops\allowbreak{}Total\allowbreak{}Below\allowbreak{}Threshold}\par
+\faultname{test\allowbreak{}Rejects\allowbreak{}Vip15\allowbreak{}Below\allowbreak{}Threshold}\par
+\faultname{test\allowbreak{}Rejects\allowbreak{}Vip15\allowbreak{}For\allowbreak{}Premium\allowbreak{}Customer} \\
+\addlinespace
+
+\faultname{Delivery\allowbreak{}Service} & 30--35 & 11, 12 &
+The VIP check waives fees before the delivery option is checked. Expected \pounds9.99 for Express; observed \pounds0.00. &
+\faultname{test\allowbreak{}Charges\allowbreak{}Express\allowbreak{}Delivery\allowbreak{}For\allowbreak{}Vip\allowbreak{}Customer} \\
+\addlinespace
+
+\faultname{Order\allowbreak{}Service} & 52--55 & 13, 14 &
+Delivery receives the original subtotal. The integration test expected \pounds4.99 delivery and observed \pounds0.00. The Mockito test observed \pounds100.00 passed in place of \pounds90.00. &
+\faultname{test\allowbreak{}Charges\allowbreak{}Standard\allowbreak{}Delivery\allowbreak{}When\allowbreak{}Product\allowbreak{}Discount\allowbreak{}Takes\allowbreak{}Total\allowbreak{}Below\allowbreak{}Threshold}\par
+\faultname{test\allowbreak{}Passes\allowbreak{}Final\allowbreak{}Discounted\allowbreak{}Total\allowbreak{}To\allowbreak{}Delivery\allowbreak{}Service} \\
+\end{longtable}
+\endgroup

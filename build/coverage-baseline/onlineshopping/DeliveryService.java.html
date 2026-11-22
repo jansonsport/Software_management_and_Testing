@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DeliveryService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Online shopping (baseline)</a> &gt; <a href="index.source.html" class="el_package">onlineshopping</a> &gt; <span class="el_source">DeliveryService.java</span></div><h1>DeliveryService.java</h1><pre class="source lang-java linenums">
+package onlineshopping;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Objects;
+
+<span class="fc" id="L8">public class DeliveryService {</span>
+
+<span class="fc" id="L10">    public enum DeliveryOption {</span>
+<span class="fc" id="L11">        STANDARD,</span>
+<span class="fc" id="L12">        EXPRESS</span>
+    }
+
+<span class="fc" id="L15">    private static final BigDecimal STANDARD_FEE =</span>
+            new BigDecimal(&quot;4.99&quot;);
+<span class="fc" id="L17">    private static final BigDecimal EXPRESS_FEE =</span>
+            new BigDecimal(&quot;9.99&quot;);
+<span class="fc" id="L19">    private static final BigDecimal FREE_DELIVERY_THRESHOLD =</span>
+            new BigDecimal(&quot;75.00&quot;);
+
+    public BigDecimal calculateDeliveryFee(
+            BigDecimal discountedMerchandiseTotal,
+            CustomerType customerType,
+            DeliveryOption option) {
+
+<span class="fc" id="L27">        validateInputs(discountedMerchandiseTotal,</span>
+                customerType, option);
+
+<span class="fc bfc" id="L30" title="All 2 branches covered.">        if (customerType == CustomerType.VIP) {</span>
+<span class="fc" id="L31">            return BigDecimal.ZERO.setScale(2);</span>
+        }
+
+<span class="fc bfc" id="L34" title="All 2 branches covered.">        if (option == DeliveryOption.EXPRESS) {</span>
+<span class="fc" id="L35">            return EXPRESS_FEE;</span>
+        }
+
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        if (isEligibleForFreeStandardDelivery(</span>
+                discountedMerchandiseTotal, customerType)) {
+<span class="fc" id="L40">            return BigDecimal.ZERO.setScale(2);</span>
+        }
+
+<span class="fc" id="L43">        return STANDARD_FEE.setScale(2, RoundingMode.HALF_UP);</span>
+    }
+
+    private void validateInputs(
+            BigDecimal merchandiseTotal,
+            CustomerType customerType,
+            DeliveryOption option) {
+
+<span class="fc" id="L51">        Objects.requireNonNull(merchandiseTotal,</span>
+                &quot;Merchandise total is required&quot;);
+<span class="fc" id="L53">        Objects.requireNonNull(customerType,</span>
+                &quot;Customer type is required&quot;);
+<span class="fc" id="L55">        Objects.requireNonNull(option,</span>
+                &quot;Delivery option is required&quot;);
+
+<span class="pc bpc" id="L58" title="1 of 2 branches missed.">        if (merchandiseTotal.signum() &lt; 0) {</span>
+<span class="nc" id="L59">            throw new IllegalArgumentException(</span>
+                    &quot;Merchandise total cannot be negative&quot;);
+        }
+<span class="fc" id="L62">    }</span>
+
+    private boolean isEligibleForFreeStandardDelivery(
+            BigDecimal merchandiseTotal,
+            CustomerType customerType) {
+
+<span class="pc bpc" id="L68" title="1 of 2 branches missed.">        return customerType == CustomerType.VIP</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">                || merchandiseTotal.compareTo(</span>
+                FREE_DELIVERY_THRESHOLD) &gt;= 0;
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

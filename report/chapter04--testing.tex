@@ -1,0 +1,43 @@
+\chapter{Testing results}
+\label{chap:testing}
+
+\section{Faults identified}
+% Introduce Table~\ref{tab:faults} and summarise the final run in your own
+% words. Distinguish the number of failing tests from the number of faults.
+
+\input{tables/coursework-faults}
+
+\subsection{How the tests exposed the faults}
+% Explain the chain from requirement to input, expected result, observed
+% result, and source location. The integration and Mockito failures give
+% different evidence for the same order-service handoff fault.
+% Independently check the evidence table against the source and JUnit log.
+
+\section{JaCoCo coverage}
+\subsection{Baseline and final results}
+% Introduce Table~\ref{tab:coverage} and explain which tests were included in
+% each run. The baseline had 52 tests. The final suite adds eight structural
+% tests and two later requirements tests.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Production coverage and JUnit outcomes}
+    \label{tab:coverage}
+    \begin{tabular}{@{}lrrrr@{}}
+        \toprule
+        Run & Tests & Failures & Line coverage & Branch coverage \\
+        \midrule
+        Original baseline & 52 & 12 & 235/284 (82.7\%) & 79/108 (73.1\%) \\
+        Final suite & 62 & 12 & 244/284 (85.9\%) & 86/108 (79.6\%) \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The complete JaCoCo report is in the artefact bundle at
+\path{Coverage/index.html}.
+
+\subsection{Coverage gains and remaining gaps}
+% Discuss which meaningful paths the structural pass added. Explain why
+% a remaining path was unreachable or lower priority. The two later
+% requirements tests added evidence without changing the coverage counts.
+

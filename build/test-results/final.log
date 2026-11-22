@@ -1,0 +1,86 @@
+JUnit version 4.13.2
+...E....................E...E.....E....E.....E.E.E.E.E...E.E..............
+Time: 0.1
+There were 12 failures:
+1) testChargesExpressDeliveryForVipCustomer(onlineshopping.DeliveryServiceTest)
+java.lang.AssertionError: Delivery fee expected:<9.99> but was:<0.00>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at onlineshopping.DeliveryServiceTest.testChargesExpressDeliveryForVipCustomer(DeliveryServiceTest.java:113)
+2) testAppliesVip15AtOriginalSubtotalThreshold(onlineshopping.DiscountServiceTest)
+java.lang.AssertionError: Coupon discount expected:<15.00> but was:<0.00>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at onlineshopping.DiscountServiceTest.testAppliesVip15AtOriginalSubtotalThreshold(DiscountServiceTest.java:305)
+3) testCombinesSameNameAccessoryEntries(onlineshopping.DiscountServiceTest)
+java.lang.AssertionError: Accessory discount expected:<3.00> but was:<0.00>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at onlineshopping.DiscountServiceTest.testCombinesSameNameAccessoryEntries(DiscountServiceTest.java:194)
+4) testCombinesSameNameNonAccessoryEntries(onlineshopping.DiscountServiceTest)
+java.lang.AssertionError: Quantity discount expected:<6.00> but was:<0.00>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at onlineshopping.DiscountServiceTest.testCombinesSameNameNonAccessoryEntries(DiscountServiceTest.java:130)
+5) testRejectsDiscount10WhenProductDiscountDropsTotalBelowThreshold(onlineshopping.DiscountServiceTest)
+java.lang.AssertionError: DISCOUNT10 uses the subtotal after product discounts: expected java.lang.IllegalArgumentException to be thrown, but nothing was thrown
+	at org.junit.Assert.assertThrows(Assert.java:1028)
+	at onlineshopping.DiscountServiceTest.testRejectsDiscount10WhenProductDiscountDropsTotalBelowThreshold(DiscountServiceTest.java:288)
+6) testRejectsDiscount10BelowThreshold(onlineshopping.DiscountServiceTest)
+java.lang.AssertionError: DISCOUNT10 requires at least £100: expected java.lang.IllegalArgumentException to be thrown, but nothing was thrown
+	at org.junit.Assert.assertThrows(Assert.java:1028)
+	at onlineshopping.DiscountServiceTest.testRejectsDiscount10BelowThreshold(DiscountServiceTest.java:277)
+7) testRejectsVip15ForPremiumCustomer(onlineshopping.DiscountServiceTest)
+java.lang.AssertionError: VIP15 is reserved for VIP customers: expected java.lang.IllegalArgumentException to be thrown, but nothing was thrown
+	at org.junit.Assert.assertThrows(Assert.java:1028)
+	at onlineshopping.DiscountServiceTest.testRejectsVip15ForPremiumCustomer(DiscountServiceTest.java:324)
+8) testIgnoresCouponCaseAndSurroundingSpaces(onlineshopping.DiscountServiceTest)
+java.lang.IllegalArgumentException: Invalid coupon
+	at onlineshopping.DiscountService.calculateCouponDiscount(DiscountService.java:235)
+	at onlineshopping.DiscountService.calculateDiscount(DiscountService.java:65)
+	at onlineshopping.DiscountServiceTest.testIgnoresCouponCaseAndSurroundingSpaces(DiscountServiceTest.java:255)
+9) testRegularAtThreshold(onlineshopping.DiscountServiceTest)
+java.lang.AssertionError: Quantity discount expected:<5.00> but was:<0.00>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at onlineshopping.DiscountServiceTest.testRegularAtThreshold(DiscountServiceTest.java:40)
+10) testRejectsVip15BelowThreshold(onlineshopping.DiscountServiceTest)
+java.lang.AssertionError: VIP15 requires an original subtotal of at least £150: expected java.lang.IllegalArgumentException to be thrown, but nothing was thrown
+	at org.junit.Assert.assertThrows(Assert.java:1028)
+	at onlineshopping.DiscountServiceTest.testRejectsVip15BelowThreshold(DiscountServiceTest.java:314)
+11) testChargesStandardDeliveryWhenProductDiscountTakesTotalBelowThreshold(onlineshopping.OrderIntegrationTest)
+java.lang.AssertionError: Delivery fee expected:<4.99> but was:<0.00>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at onlineshopping.OrderIntegrationTest.testChargesStandardDeliveryWhenProductDiscountTakesTotalBelowThreshold(OrderIntegrationTest.java:36)
+12) testPassesFinalDiscountedTotalToDeliveryService(onlineshopping.OrderServiceTest)
+Argument(s) are different! Wanted:
+deliveryService.calculateDeliveryFee(
+    90.00,
+    REGULAR,
+    STANDARD
+);
+-> at onlineshopping.OrderServiceTest.testPassesFinalDiscountedTotalToDeliveryService(OrderServiceTest.java:42)
+Actual invocation has different arguments:
+deliveryService.calculateDeliveryFee(
+    100.00,
+    REGULAR,
+    STANDARD
+);
+-> at onlineshopping.OrderService.createOrder(OrderService.java:52)
+
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:502)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:486)
+	at onlineshopping.OrderServiceTest.testPassesFinalDiscountedTotalToDeliveryService(OrderServiceTest.java:42)
+
+FAILURES!!!
+Tests run: 62,  Failures: 12
+
+Coverage report: Coverage/index.html

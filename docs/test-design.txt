@@ -1,0 +1,112 @@
+Working test design and evidence
+================================
+Use the numbered requirements in CourseworkDescription.pdf as the source of
+expected behaviour. This file is a working aid for reviewing the tests.
+See requirements-to-tests.md for the full mapping from requirements to JUnit methods.
+
+Decision tables
+---------------
+Threshold examples use £20 laptops and £10 accessories unless stated otherwise.
+
+ Rule  Req  Conditions                              Expected
+ Q1    3    Regular, 4 / 5 / 6 laptops              £0 / £5 / £6
+ Q2    3    Premium, 2 / 3 / 4 laptops              £0 / £3 / £4
+ Q3    3    VIP, 2 / 3 / 4 laptops                  £0 / £6 / £8
+ Q4    3    VIP, entries of 1 and 2, same name       £6
+ Q5    3    VIP, entries of 1 and 2, different name  £0
+ A1    3–4  VIP, 2 / 3 / 4 mice                     accessory £0 / £3 / £4, quantity £0
+ A2    4    Same mouse name, entries of 1 and 2     £3
+ A3    4    Three mice and one keyboard             £3, mice only
+ C1    5,8  DISCOUNT10, product total £99.99         Reject
+ C2    5,8  DISCOUNT10, product total £100 / £100.01 £10
+ C3    5,8  DISCOUNT10, original £105, product £94.50 Reject
+ C4    5,8  DISCOUNT10, original £103, product £100  £10
+ C5    6,8  VIP15, VIP original £149.99              Reject
+ C6    6,8  VIP15, VIP original £150, product £135  £15
+ C7    6,8  VIP15, VIP original £150.01              £15
+ C8    6–7  VIP15, Premium original £150            Reject
+ C9    7    " discount10 ", qualifying order         £10
+ C10   7    Unknown or combined coupon codes         Reject
+ D1    11–12 Regular Standard, £74.99/75/75.01      £4.99/£0/£0
+ D2    11–12 Premium Standard, £74.99/75/75.01      £4.99/£0/£0
+ D3    12    VIP Standard, £0                        £0
+ D4    11–12 Express, any tier                       £9.99
+ D5    12–14 Premium Standard, £78 reduced to £74.10 £4.99 delivery, £79.09 payable
+
+Q1–C10 map to the matching named cases in DiscountServiceTest. D1–D4
+map to DeliveryServiceTest. D5 maps to
+OrderIntegrationTest.testChargesStandardDeliveryWhenProductDiscountTakesTotalBelowThreshold.
+OrderServiceTest verifies the argument passed between the services in isolation.
+
+Decision-to-decision graphs (implementation as supplied)
+-------------------------------------------------------
+Contiguous statements between decisions are grouped. The graphs describe the
+existing code paths. The decision tables describe expected behaviour.
+
+DiscountService
+  Entry → input validation → subtotal → quantity loop → accessory loop
+    → coupon decisions → subtract coupon, floor and round → return result
+  Quantity loop: accessory? yes → next item; no → choose tier and threshold
+    → accumulate line discount → next item.
+  Accessory loop: non-accessory or fewer than 3? yes → next item;
+    no → accumulate accessory discount → next item.
+  Coupon decisions:
+    blank/absent? yes → zero; no → DISCOUNT10?
+    DISCOUNT10 yes → product total >= £100? yes → £10 capped; no → zero.
+    DISCOUNT10 no → VIP15? no → throw; yes → VIP AND product total >= £150?
+      yes → £15 capped; no → zero.
+  Q1–A3 exercise the two loops. C1–C10 and the absent coupon cases exercise
+  the coupon exits. Zero-priced merchandise covers a final total of zero.
+
+DeliveryService
+  Entry → validate inputs → VIP? yes → zero; no → Express?
+    Express yes → £9.99; no → eligible for free Standard?
+      yes → zero; no → £4.99.
+  D1–D4 exercise the tier, option and threshold outcomes. StructuralCoverageTest
+  adds the negative total rejection. The VIP-true outcome in the private
+  Standard eligibility helper is unreachable because the earlier VIP return
+  handles every VIP input. Invalid quantities/negative prices in the discount
+  validator are prevented by ordinary CartItem and Product APIs.
+
+OrderService
+  Entry → validate arguments → empty cart? yes → throw; no → calculate discounts
+    → pass total to delivery → add fee → return order result.
+  D5 exercises the non-empty path. OrderIntegrationTest.testRejectsEmptyOrder
+  exercises the rejection path. The mock test targets the delivery handoff.
+  For a non-VIP order, a valid DISCOUNT10 coupon leaves at least £90 and
+  VIP15 is unavailable, so a coupon alone cannot cross the £75 Standard
+  delivery threshold for a non-VIP. D5 uses a product discount instead.
+
+Fault review notes
+------------------
+Original source lines       Req   Evidence to review
+DiscountService 133         3     testRegularAtThreshold: expected £5, got £0
+DiscountService 146–163     3     testCombinesSameNameNonAccessoryEntries: £6 vs £0
+DiscountService 178–190     4     testCombinesSameNameAccessoryEntries: £3 vs £0
+DiscountService 223–225     6,8   testAppliesVip15AtOriginalSubtotalThreshold: £15 vs £0
+DiscountService 206,212,222 7     testIgnoresCouponCaseAndSurroundingSpaces: rejected
+DiscountService 219,231     7     Threshold and tier rejection tests returned normally
+DeliveryService 30–35       12    testChargesExpressDeliveryForVipCustomer: £9.99 vs £0
+OrderService 52–55          13,14 Integration test below £75: £4.99 fee vs £0
+
+Review each fixture and result against the brief before using this evidence.
+Multiple failing tests may expose the same underlying issue. Retain the AI
+prompts and record how you independently validated the tests. The coursework
+report and its reasoning are for you to write.
+
+Coverage check
+--------------
+Measured with the JaCoCo 0.8.15 agent and core shipped by VS Code Test Runner
+for Java. Both runs include the mock test using Mockito from the Week 4
+solution. See Coverage/index.html for the annotated final report.
+
+                      Tests  Failures   Lines        Branches
+Original baseline       52     12       235/284      79/108
+With structural tests   62     12       244/284      86/108
+
+The added validation tests cover all measured cart branches and one more
+delivery validation branch. The final run includes two later requirements
+tests for the stated coupon cap and unsupported delivery option names.
+JUnit logs are in build/test-results/.
+The Mockito failure corroborates the real-service delivery test. Delivery
+received £100.00 when it should have received the discounted £90.00.
