@@ -117,19 +117,6 @@ should have cost \pounds4.99, but the order was given free delivery.
 The integration test exposed a problem that a direct test of the
 delivery threshold could not detect.
 
-\subsection{Isolation with Mockito}
-\begin{itemize}
-    \item \texttt{testPassesFinalDiscountedTotalToDeliveryService}
-    in \texttt{OrderServiceTest} used Mockito to replace the discount
-    and delivery services. The discount mock returned an original
-    subtotal of \pounds100.00 and a final total of \pounds90.00. The
-    delivery mock returned a fixed fee so the test could focus on
-    the amount passed to it. Mockito verification showed that
-    \texttt{OrderService} passed \pounds100.00 instead of
-    \pounds90.00, locating the fault at the handoff between the
-    services.
-\end{itemize}
-
 \section{Coverage-guided structural testing}
 The functional decision table describes the behaviour required by the
 brief. The decision-to-decision graphs describe the paths in the supplied
