@@ -62,6 +62,29 @@ on the cutoffs that change a requirement's outcome. The suite did not
 cross all boundary values of all inputs, since many combinations would
 repeat the same required behaviour.
 
+\subsection{Focused tests and combined scenarios}
+Each functional test was designed around one observable behaviour.
+Where a rule could be isolated, other inputs were held fixed. For
+example, the Regular quantity discount tests in requirement 3 used the
+same customer type and unit price and varied the quantity between four,
+five, and six units. No coupon or delivery calculation was involved.
+
+A combined scenario was used when the interaction between rules was
+itself the behaviour under test. For requirements 6 and 8, the
+\texttt{VIP15} case in Table~\ref{tab:vip15-decisions} used an order that
+fell from \pounds150.00 to \pounds135.00 after the product discount.
+Only the original subtotal qualified. An order with both subtotals
+above the threshold would have qualified under either calculation and
+would not have exposed a choice of the wrong subtotal.
+
+For each requirement linked to a scenario, the selection check was
+whether an incorrect implementation of that requirement would change
+an asserted outcome. A separate test was useful when a combined outcome
+could hide the mistake or leave its cause unclear. For example, the
+order integration test checks the delivery fee, while a focused Mockito
+test checks the amount passed to the delivery service. The two tests
+show the effect of the fault and identify where it occurs.
+
 \subsection{Completeness and selection trade-offs}
 The suite used representative classes and selected interactions. It did
 not meet strong normal or strong robust equivalence class coverage for
