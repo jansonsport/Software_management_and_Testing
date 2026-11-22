@@ -87,7 +87,17 @@ The complete JaCoCo report is in the artefact bundle at
 \path{Coverage/index.html}.
 
 \subsection{Coverage gains and remaining gaps}
-% Discuss which meaningful paths the structural pass added. Explain why
-% a remaining path was unreachable or lower priority. The two later
-% requirements tests added evidence without changing the coverage counts.
+The baseline left gaps in cart and delivery validation. Tests for
+invalid quantities, insufficient stock, and missing cart entries raised
+\texttt{ShoppingCart} branch coverage from 18 of 24 to 24 of 24. These
+paths were prioritised because invalid updates can affect cart contents
+and downstream totals. The negative-total test raised
+\texttt{DeliveryService} branch coverage from 10 of 12 to 11 of 12 by
+checking that an invalid merchandise total was rejected before a fee
+was calculated.
+
+The remaining VIP branch in the Standard delivery helper could not be
+reached because the public method returns earlier for VIPs. Additional
+tests for customer and product setters were lower priority because they
+would add less evidence about the pricing rules in the brief.
 
