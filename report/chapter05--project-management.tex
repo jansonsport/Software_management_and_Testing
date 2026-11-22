@@ -2,9 +2,26 @@
 \label{chap:project-management}
 
 \section{Challenges and trade-offs}
-% Describe a challenge you actually encountered, what you did about it, and
-% what you learned. Explain one trade-off between coverage, readability,
-% and the value of another test.
+With limited time, a key challenge was deciding where testing effort
+would be most useful. Priorities were set early so that time could be
+allocated to discount and delivery rules, their interactions, and the
+validation paths that could affect an order.
+
+\begin{itemize}
+    \item Representative input combinations and boundary cases were
+    selected in place of an exhaustive cross-product. This kept the
+    tests focused on pricing decisions, while leaving some combinations
+    untested.
+    \item The structural pass prioritised stock checks and invalid
+    cart and delivery inputs. Additional tests for customer and product
+    setters were deferred because they offered less evidence about
+    the amount payable.
+\end{itemize}
+
+With more time, the decision-to-decision sketches for selected methods
+would have been extended into detailed DD graphs for the remaining
+methods. The tests could then have been mapped to individual edges to
+identify further reachable paths.
 
 \section{AI assistance and validation}
 \subsection{Purpose, scope, and prompts}
