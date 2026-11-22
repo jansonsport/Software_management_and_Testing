@@ -104,12 +104,31 @@ exhaustive coverage of all feasible input combinations.
 
 \section{Unit tests, integration tests, and mocking}
 \subsection{Testing individual components and their interaction}
-% Describe what the individual class tests establish. Explain what the
-% real-service order tests add when discounts and delivery work together.
+Unit tests checked rules within individual classes using controlled
+inputs. For example, \texttt{DeliveryServiceTest} checked that Standard
+delivery costs \pounds4.99 for a Regular customer with a discounted
+total of \pounds74.99. Supplying the total directly isolated the
+delivery rule from the discount calculation.
+
+Integration tests checked how the real discount, delivery, and order
+services worked together. In one scenario, a Premium order dropped from
+\pounds78.00 to \pounds74.10 after a quantity discount. Standard delivery
+should have cost \pounds4.99, but the order was given free delivery.
+The integration test exposed a problem that a direct test of the
+delivery threshold could not detect.
 
 \subsection{Isolation with Mockito}
-% Explain why you mocked the services in OrderServiceTest and what the
-% argument check could show about the handoff to delivery.
+\begin{itemize}
+    \item \texttt{testPassesFinalDiscountedTotalToDeliveryService}
+    in \texttt{OrderServiceTest} used Mockito to replace the discount
+    and delivery services. The discount mock returned an original
+    subtotal of \pounds100.00 and a final total of \pounds90.00. The
+    delivery mock returned a fixed fee so the test could focus on
+    the amount passed to it. Mockito verification showed that
+    \texttt{OrderService} passed \pounds100.00 instead of
+    \pounds90.00, locating the fault at the handoff between the
+    services.
+\end{itemize}
 
 \section{Coverage-guided structural testing}
 The functional decision table describes the behaviour required by the
