@@ -2,16 +2,66 @@
 \label{chap:testing}
 
 \section{Faults identified}
-% Introduce Table~\ref{tab:faults} and summarise the final run in your own
-% words. Distinguish the number of failing tests from the number of faults.
+The final run produced 12 failures across 62 tests. These failures
+were grouped into the eight faults in Table~\ref{tab:faults}. Some
+faults were exposed by more than one test.
 
 \input{tables/coursework-faults}
 
 \subsection{How the tests exposed the faults}
-% Explain the chain from requirement to input, expected result, observed
-% result, and source location. The integration and Mockito failures give
-% different evidence for the same order-service handoff fault.
-% Independently check the evidence table against the source and JUnit log.
+\paragraph{Regular quantity threshold.}
+The four-unit and six-unit cases passed, but the five-unit case returned
+\pounds0.00 instead of \pounds5.00. The difference at the boundary
+pointed to the rate selection in \texttt{DiscountService}, where
+line 133 uses \texttt{quantity > 5} and excludes exactly five.
+
+\paragraph{Same-name non-accessory entries.}
+Three laptops in a single entry qualified for the VIP discount, but
+splitting them into same-name entries of one and two gave no discount.
+The quantity loop in \texttt{DiscountService} passes each entry's
+quantity to the rate calculation at lines 156--159, so neither entry
+reaches the threshold on its own.
+
+\paragraph{Same-name accessory entries.}
+The test split three same-name mice into entries of one and two.
+It expected \pounds3.00 off and got \pounds0.00. The accessory loop
+in \texttt{DiscountService} skips an entry if its own quantity is below
+three (lines 178--183), so both entries were skipped before any
+discount was calculated.
+
+\paragraph{VIP15 eligibility subtotal.}
+The test verified that the original subtotal was \pounds150.00 and the
+quantity discount was \pounds15.00 before the coupon assertion failed.
+Only the original amount qualified. The eligibility check at lines
+223--225 of \texttt{DiscountService} compares the reduced
+\pounds135.00 product total with the \pounds150.00 minimum.
+
+\paragraph{Case-sensitive coupon matching.}
+The eligible lower-case \texttt{discount10} input with surrounding
+spaces raised an exception. The stack trace pointed to line 235 of
+\texttt{DiscountService}. Reading back from that exception showed that
+line 206 trims the spaces, while line 212 compares the remaining text
+with the upper-case code using a case-sensitive comparison.
+
+\paragraph{Ineligible coupons were ignored.}
+Four tests expected a rejection for a recognised coupon when the total
+or customer type did not qualify. All returned normally. Following
+the failed eligibility checks in \texttt{DiscountService} led to
+lines 219 and 231, which return a zero discount instead of throwing
+the expected exception.
+
+\paragraph{VIP Express delivery fee.}
+A VIP Express order was charged \pounds0.00, while the Regular and
+Premium Express tests returned the expected \pounds9.99. This pointed
+to the VIP condition in \texttt{DeliveryService}. The return at
+lines 30--31 occurs before the Express check at line 34.
+
+\paragraph{Subtotal passed to delivery.}
+The integration test confirmed the \pounds74.10 discounted total but
+observed free delivery. The Mockito test then showed that the delivery
+call used \pounds100.00 where \pounds90.00 was expected. The
+invocation trace pointed to \texttt{OrderService}, where line 53
+passes the original subtotal.
 
 \section{JaCoCo coverage}
 \subsection{Baseline and final results}
